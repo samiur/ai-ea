@@ -15,6 +15,9 @@ env:
   PYTHON_VERSION: "3.12"
   UV_SYSTEM_PYTHON: "1"
   CI: "true"
+  # Ensure uv uses public PyPI only (no extra indexes)
+  UV_EXTRA_INDEX_URL: ""
+  PIP_EXTRA_INDEX_URL: ""
 
 jobs:
   test:
