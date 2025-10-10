@@ -12,7 +12,7 @@
 - [x] Step 1: Project initialization with uv and pyproject.toml
 - [x] Step 2: Basic FastAPI app with health endpoint
 - [x] Step 3: Pydantic settings and environment config
-- [ ] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
+- [x] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
 - [ ] Step 5: **Test execution in CI** *(CI/CD - moved early)*
 - [ ] Step 6: **Code quality checks** *(CI/CD - moved early)*
 - [ ] Step 7: **Docker build and registry** *(CI/CD - moved early)*
@@ -143,6 +143,20 @@
   - Comprehensive test suite (11 tests, all passing, 87% coverage)
   - All CI checks passing (tests, mypy, ruff)
   - Created PR #4: https://github.com/samiur/ai-ea/pull/4
+
+- ✅ Step 4 completed: Basic GitHub Actions workflow
+  - Created .github/workflows/ci.yml with three jobs:
+    - test: Run pytest with full test suite
+    - lint: Run ruff linting and format checks
+    - type-check: Run mypy strict type checking
+  - Configured uv package manager with caching
+  - Added Python 3.12 setup
+  - Configured triggers: push/PR to main/develop, manual dispatch
+  - Added CI status badges to README.md
+  - Created comprehensive secrets documentation (docs/secrets.md)
+  - Comprehensive test suite (12 tests in test_ci_setup.py, 40 total tests passing)
+  - All CI checks passing (tests, mypy, ruff)
+  - Created Issue #5, PR #6: https://github.com/samiur/ai-ea/pull/6
 
 ---
 
