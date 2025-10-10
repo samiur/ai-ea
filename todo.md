@@ -10,7 +10,7 @@
 
 ### Phase 1: Foundation & CI/CD (Steps 1-10)
 - [x] Step 1: Project initialization with uv and pyproject.toml
-- [ ] Step 2: Basic FastAPI app with health endpoint
+- [x] Step 2: Basic FastAPI app with health endpoint
 - [ ] Step 3: Pydantic settings and environment config
 - [ ] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
 - [ ] Step 5: **Test execution in CI** *(CI/CD - moved early)*
@@ -123,6 +123,15 @@
   - Configured all dev tools (mypy, ruff, pytest)
   - Added comprehensive tests (11 tests, all passing)
   - Created PR #1: https://github.com/samiur/ai-ea/pull/1
+
+- ✅ Step 2 completed: Basic FastAPI application with core endpoints
+  - Implemented FastAPI app with lifespan context manager
+  - Added three core endpoints: /, /health, /status
+  - Added CORS and request ID middleware
+  - Created API package structure (src/api/routes/)
+  - Comprehensive test suite (6 tests, all passing, 90% coverage)
+  - All CI checks passing (tests, mypy, ruff)
+  - Created PR #3: https://github.com/samiur/ai-ea/pull/3
 
 ---
 
