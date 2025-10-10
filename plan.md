@@ -18,19 +18,24 @@ Building an AI-powered executive assistant for calendar management and coordinat
 
 ## Implementation Phases
 
-### Phase 1: Foundation (Steps 1-10)
-Basic project setup, database, and API structure
+> **Note**: CI/CD infrastructure (Steps 4-8) has been moved early in the implementation plan to provide immediate quality feedback and automated testing from the start. See `docs/step-reorganization.md` for details.
 
-### Phase 2: Core Models & Logic (Steps 11-15)
-Policy engine, feature flags, and authentication
+### Phase 1: Foundation & CI/CD (Steps 1-10)
+Basic project setup, **CI/CD pipeline** (Steps 4-8), database, and API structure
 
-### Phase 3: Google Integration (Steps 16-20)
-Calendar API, conflict detection, and Gmail integration
+### Phase 2: Database & Models (Steps 11-17)
+Database setup, core models, repository pattern, and feature flags
 
-### Phase 4: Communication (Steps 21-27)
-Slack bot, message templates, and draft generation
+### Phase 3: Authentication & Security (Steps 18-20)
+OAuth configuration, secure token storage, and JWT middleware
 
-### Phase 5: Orchestration (Steps 28-30)
+### Phase 4: Google Integration (Steps 21-25)
+Google OAuth, Calendar API, conflict detection, and Gmail integration
+
+### Phase 5: Communication (Steps 26-32)
+Slack bot, message templates, draft generation, and email parsing
+
+### Phase 6: Orchestration (Steps 33-35)
 Scheduler, approval workflows, and orchestrator
 
 ---
@@ -1511,6 +1516,384 @@ Test end-to-end workflow execution.
 
 ---
 
+## Phase 6: CI/CD Infrastructure (Steps 31-35)
+
+### Step 31: Basic GitHub Actions Workflow
+
+```text
+Set up foundational GitHub Actions workflow for CI/CD.
+
+Building on Steps 1-30:
+
+1. Write tests in tests/test_ci_setup.py:
+   - Test that workflow files are valid YAML
+   - Test that required secrets are documented
+   - Test that workflow triggers are configured correctly
+
+2. Create .github/workflows/ci.yml:
+   - Workflow name: "CI Pipeline"
+   - Triggers:
+     - push to main and develop branches
+     - pull requests to main and develop
+     - workflow_dispatch (manual trigger)
+   - Basic structure with jobs:
+     - test
+     - lint
+     - type-check
+
+3. Configure checkout and Python setup:
+   - actions/checkout@v4 for code
+   - astral-sh/setup-uv@v5 for uv installation
+   - Cache uv dependencies for faster runs
+   - Set up Python 3.12 using uv python install
+
+4. Define environment variables:
+   - PYTHON_VERSION: "3.12"
+   - UV_SYSTEM_PYTHON: "1"
+   - CI: "true"
+
+5. Create job matrix for Python versions:
+   - Test on Python 3.12 (primary)
+   - Optional: Add 3.11 for compatibility testing
+
+6. Add basic status badges to README.md:
+   - CI status badge
+   - Test coverage badge (setup for later)
+
+7. Document required repository secrets:
+   - GOOGLE_CLIENT_ID (for integration tests)
+   - GOOGLE_CLIENT_SECRET
+   - SLACK_BOT_TOKEN
+   - DATABASE_URL (test database)
+
+Ensure workflow runs successfully on push.
+```
+
+### Step 32: Test Execution in CI
+
+```text
+Implement comprehensive test execution in GitHub Actions.
+
+Building on Steps 1-31:
+
+1. Write tests in tests/test_ci_integration.py:
+   - Test that CI environment is properly configured
+   - Test that all required dependencies are installed
+   - Test that test database is accessible
+
+2. Enhance the test job in .github/workflows/ci.yml:
+   - Install project dependencies:
+     - uv sync --locked
+   - Install test dependencies:
+     - uv sync --group dev
+   - Set up test database service:
+     - Use postgres:15 service container
+     - Configure healthcheck
+     - Set DATABASE_URL environment variable
+
+3. Add PostgreSQL service to workflow:
+   ```yaml
+   services:
+     postgres:
+       image: postgres:15
+       env:
+         POSTGRES_USER: test_user
+         POSTGRES_PASSWORD: test_pass
+         POSTGRES_DB: test_db
+       options: >-
+         --health-cmd pg_isready
+         --health-interval 10s
+         --health-timeout 5s
+         --health-retries 5
+       ports:
+         - 5432:5432
+   ```
+
+4. Configure test execution:
+   - Run: uv run pytest tests/ -v --tb=short
+   - Generate JUnit XML report: --junitxml=junit.xml
+   - Generate coverage report: --cov=src --cov-report=xml
+   - Continue on error for coverage reporting
+
+5. Upload test results:
+   - actions/upload-artifact for test reports
+   - Store junit.xml for test reporting
+   - Store coverage.xml for coverage tracking
+
+6. Add test result annotations:
+   - Use EnricoMi/publish-unit-test-result-action
+   - Annotate PR with test failures
+   - Show test trends over time
+
+7. Configure test timeout:
+   - Set job timeout: 15 minutes
+   - Set individual test timeout in pytest.ini
+
+Test that all tests run successfully in CI environment.
+```
+
+### Step 33: Code Quality Checks
+
+```text
+Add comprehensive code quality checks to CI pipeline.
+
+Building on Steps 1-32:
+
+1. Write tests in tests/test_code_quality.py:
+   - Test that ruff configuration is valid
+   - Test that mypy configuration is valid
+   - Test that all Python files pass formatting checks
+
+2. Create lint job in .github/workflows/ci.yml:
+   - Name: "Lint and Format Check"
+   - Runs on: ubuntu-latest
+   - Steps:
+     - Checkout code
+     - Setup uv and Python
+     - Install dependencies (uv sync --locked)
+     - Run ruff check: uv run ruff check src/ tests/
+     - Run ruff format check: uv run ruff format --check src/ tests/
+
+3. Create type-check job:
+   - Name: "Type Checking"
+   - Runs on: ubuntu-latest
+   - Steps:
+     - Checkout code
+     - Setup uv and Python
+     - Install dependencies
+     - Run mypy: uv run mypy src/ --strict
+
+4. Add security scanning:
+   - Create security job
+   - Use bandit for Python security linting:
+     - uv add --dev bandit
+     - uv run bandit -r src/ -f json -o bandit-report.json
+   - Upload security scan results
+
+5. Add dependency vulnerability scanning:
+   - Use pip-audit:
+     - uv add --dev pip-audit
+     - uv run pip-audit --format json --output audit-report.json
+   - Fail on high/critical vulnerabilities
+   - Allow warnings to pass
+
+6. Create combined quality gate:
+   - All quality checks must pass
+   - Block PR merge if any check fails
+   - Add status check requirements in branch protection
+
+7. Configure caching for speed:
+   - Cache uv packages: ~/.cache/uv
+   - Cache mypy cache: .mypy_cache/
+   - Cache ruff cache: .ruff_cache/
+
+8. Add quality badges to README:
+   - Ruff badge
+   - Type checking badge
+   - Security scanning badge
+
+Ensure all code quality checks pass on current codebase.
+```
+
+### Step 34: Docker Build and Registry
+
+```text
+Add Docker image building and registry push to CI/CD pipeline.
+
+Building on Steps 1-33:
+
+1. Write tests in tests/test_docker.py:
+   - Test Dockerfile syntax validity
+   - Test that all required files are copied
+   - Test multi-stage build structure
+
+2. Create production Dockerfile:
+   ```dockerfile
+   FROM ghcr.io/astral-sh/uv:0.7.4 AS uv
+   FROM python:3.12-slim AS base
+
+   # Copy uv binary
+   COPY --from=uv /usr/local/bin/uv /usr/local/bin/uv
+
+   # Set working directory
+   WORKDIR /app
+
+   # Copy dependency files
+   COPY pyproject.toml uv.lock ./
+
+   # Install dependencies
+   RUN uv sync --locked --no-dev
+
+   # Copy application
+   COPY src/ ./src/
+   COPY alembic/ ./alembic/
+   COPY alembic.ini ./
+
+   # Expose port
+   EXPOSE 8000
+
+   # Run migrations and start app
+   CMD ["uv", "run", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+   ```
+
+3. Create .dockerignore:
+   - .git/
+   - .github/
+   - tests/
+   - *.md
+   - .env
+   - .venv/
+   - __pycache__/
+   - *.pyc
+
+4. Add Docker build job to .github/workflows/ci.yml:
+   - Name: "Build Docker Image"
+   - Runs after test job passes
+   - Steps:
+     - Checkout code
+     - Set up Docker Buildx
+     - Login to GitHub Container Registry
+     - Extract metadata for tags
+     - Build and push image
+
+5. Configure Docker tags strategy:
+   - Latest: for main branch
+   - Branch name: for feature branches
+   - PR number: for pull requests
+   - SHA: for all commits
+   - Semantic version: for tags
+
+6. Use Docker layer caching:
+   - actions/cache for Docker layers
+   - Cache key based on Dockerfile and dependencies
+   - Restore from previous builds
+
+7. Add image security scanning:
+   - Use Trivy for vulnerability scanning
+   - aquasecurity/trivy-action
+   - Scan built image before push
+   - Upload scan results to GitHub Security
+
+8. Configure GitHub Container Registry:
+   - Use ghcr.io/[username]/ai-executive-assistant
+   - Set package visibility (private initially)
+   - Configure retention policy
+   - Add package description and README
+
+9. Add build matrix for platforms:
+   - linux/amd64
+   - linux/arm64 (optional)
+
+Test Docker build locally and in CI.
+```
+
+### Step 35: Deployment Automation
+
+```text
+Implement automated deployment workflows for staging and production.
+
+Building on Steps 1-34:
+
+1. Create .github/workflows/deploy-staging.yml:
+   - Triggers:
+     - Push to develop branch
+     - Manual workflow_dispatch
+   - Jobs:
+     - deploy-staging
+   - Environment: staging
+   - Required approvals: 0 (auto-deploy)
+
+2. Create .github/workflows/deploy-production.yml:
+   - Triggers:
+     - Push to main branch (tags only)
+     - Manual workflow_dispatch
+   - Jobs:
+     - deploy-production
+   - Environment: production
+   - Required approvals: 1 (manual approval)
+
+3. Configure GitHub Environments:
+   - staging environment:
+     - No protection rules
+     - Environment secrets
+     - Environment variables
+   - production environment:
+     - Required reviewers: [team leads]
+     - Deployment branches: main only
+     - Environment secrets
+     - Environment variables
+
+4. Add deployment job structure:
+   ```yaml
+   deploy:
+     runs-on: ubuntu-latest
+     environment:
+       name: staging
+       url: https://staging.example.com
+     steps:
+       - Checkout code
+       - Download Docker image
+       - Deploy to platform
+       - Run health checks
+       - Notify on success/failure
+   ```
+
+5. Implement health check verification:
+   - Wait for deployment to complete
+   - Check /health endpoint
+   - Verify database connectivity
+   - Verify external service connections
+   - Rollback on failure
+
+6. Add deployment notifications:
+   - Slack notification on deployment start
+   - Slack notification on success/failure
+   - GitHub deployment status
+   - Email notification for production
+
+7. Create deployment scripts:
+   - scripts/deploy.sh:
+     - Pull latest image
+     - Run database migrations
+     - Restart services
+     - Verify health
+   - scripts/rollback.sh:
+     - Revert to previous image
+     - Rollback migrations if needed
+     - Restore service
+
+8. Configure deployment secrets:
+   - Database credentials
+   - API keys
+   - OAuth secrets
+   - Service URLs
+   - Encryption keys
+
+9. Add smoke tests post-deployment:
+   - tests/smoke/ directory
+   - Critical path testing
+   - API endpoint availability
+   - Database connectivity
+   - External service integration
+
+10. Document deployment process:
+    - docs/deployment.md
+    - Manual deployment steps
+    - Rollback procedures
+    - Troubleshooting guide
+    - Emergency contacts
+
+11. Set up deployment monitoring:
+    - Track deployment frequency
+    - Track deployment duration
+    - Track failure rate
+    - Alert on failed deployments
+
+Test deployment workflow to staging environment.
+```
+
+---
+
 ## Testing Strategy
 
 Each step includes:
@@ -1521,17 +1904,18 @@ Each step includes:
 ## Deployment Strategy
 
 1. Local development with Docker Compose
-2. CI/CD with GitHub Actions
+2. CI/CD with GitHub Actions (See Steps 31-35 for implementation)
 3. Staging environment on Vercel/Railway
 4. Production deployment with monitoring
 
 ## Next Steps After MVP
 
-1. Zep memory integration (Steps 31-35)
-2. Confidence scoring and ML (Steps 36-40)
-3. Advanced features (travel mode, sanity sweeps)
-4. Performance optimization
-5. Production hardening
+1. CI/CD Infrastructure (Steps 31-35)
+2. Zep memory integration (Steps 36-40)
+3. Confidence scoring and ML (Steps 41-45)
+4. Advanced features (travel mode, sanity sweeps)
+5. Performance optimization
+6. Production hardening
 
 ## Success Criteria
 
