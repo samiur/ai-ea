@@ -8,23 +8,39 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.config import get_settings
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Handle application startup and shutdown events."""
-    # Startup
-    print("🚀 Starting AI Executive Assistant API...")
-    yield
-    # Shutdown
-    print("👋 Shutting down AI Executive Assistant API...")
+    settings = get_settings()
 
+    # Startup
+    print(f"🚀 Starting {settings.app_name} v{settings.version}...")
+    print(f"📦 Environment: {settings.environment}")
+    print(f"🐛 Debug mode: {settings.debug}")
+
+    # Validate settings on startup
+    if settings.environment == "production" and settings.debug:
+        print("⚠️  WARNING: Debug mode is enabled in production!")
+
+    yield
+
+    # Shutdown
+    print(f"👋 Shutting down {settings.app_name}...")
+
+
+# Get settings
+settings = get_settings()
 
 # Create FastAPI application
 app = FastAPI(
-    title="AI Executive Assistant",
+    title=settings.app_name,
     description="AI-powered executive assistant for calendar management and coordination",
-    version="0.1.0",
+    version=settings.version,
     lifespan=lifespan,
+    debug=settings.debug,
 )
 
 # Configure CORS for localhost development
@@ -77,8 +93,9 @@ async def health() -> dict[str, str]:
 @app.get("/status")
 async def status() -> dict[str, str]:
     """Status endpoint returning app information."""
+    settings = get_settings()
     return {
-        "app_name": "AI Executive Assistant",
-        "version": "0.1.0",
-        "environment": "development",
+        "app_name": settings.app_name,
+        "version": settings.version,
+        "environment": settings.environment,
     }
