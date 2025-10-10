@@ -321,16 +321,43 @@ Feature flags:
 
 ---
 
-## 15) Backlog (build order)
+## 15) Implementation Approach
 
-1. Auth/OAuth plumbing (GCal, Gmail, Slack) + minimal API gateway
-2. Intent model + conflict detector + dry-run scheduler
-3. Comms Agent (email/slack) + approval cards
-4. Zep integration (basic read path) → write-backs
-5. Two-phase commit + idempotency + undo
-6. Sanity sweeps + series cadence keeper
-7. Confidence gate + dashboard (automation, errors)
-8. Travel mode + soft holds + waitlist/backfill
+**Development Strategy**: We follow a 35-step incremental implementation plan (see `../plan.md`) with **CI/CD infrastructure prioritized early** (Steps 4-8) to ensure:
+- Automated testing on every commit
+- Code quality gates from day one
+- TDD-friendly development workflow
+- Production-ready practices from the start
+
+**Build Order** (aligned with plan.md phases):
+
+**Phase 1: Foundation & CI/CD** (Steps 1-10)
+1. Project initialization + FastAPI + Settings
+2. **Complete CI/CD pipeline** (GitHub Actions, testing, quality checks, Docker, deployment)
+3. Database setup + Error handling
+
+**Phase 2: Database & Models** (Steps 11-17)
+4. SQLModel + Migrations + Repository pattern
+5. Feature flags + Policy engine
+
+**Phase 3: Authentication & Security** (Steps 18-20)
+6. OAuth models + Token storage + JWT middleware
+
+**Phase 4: Google Integration** (Steps 21-25)
+7. Google OAuth + Calendar API + Gmail API
+8. Conflict detection
+
+**Phase 5: Communication** (Steps 26-32)
+9. Slack bot + Message templates + Draft generation
+10. Email/Slack parsing
+
+**Phase 6: Orchestration** (Steps 33-35)
+11. Scheduler + Approval workflows + Orchestrator
+
+**Phase 7: Advanced Features** (Post-MVP)
+12. Zep memory integration
+13. Confidence scoring ML
+14. Travel mode + Sanity sweeps
 
 ---
 

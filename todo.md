@@ -8,45 +8,52 @@
 
 ## Implementation Phases
 
-### Phase 1: Foundation (Steps 1-10)
+### Phase 1: Foundation & CI/CD (Steps 1-10)
 - [x] Step 1: Project initialization with uv and pyproject.toml
 - [ ] Step 2: Basic FastAPI app with health endpoint
 - [ ] Step 3: Pydantic settings and environment config
-- [ ] Step 4: Docker Compose for PostgreSQL
-- [ ] Step 5: SQLModel setup and connection
-- [ ] Step 6: Person and Policy data models
-- [ ] Step 7: MeetingSeries and related models
-- [ ] Step 8: Database migrations with Alembic
-- [ ] Step 9: Repository pattern implementation
+- [ ] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
+- [ ] Step 5: **Test execution in CI** *(CI/CD - moved early)*
+- [ ] Step 6: **Code quality checks** *(CI/CD - moved early)*
+- [ ] Step 7: **Docker build and registry** *(CI/CD - moved early)*
+- [ ] Step 8: **Deployment automation** *(CI/CD - moved early)*
+- [ ] Step 9: Docker Compose for PostgreSQL
 - [ ] Step 10: API error handling and responses
 
-### Phase 2: Core Models & Logic (Steps 11-15)
-- [ ] Step 11: Feature flags system
-- [ ] Step 12: Policy YAML loader and parser
-- [ ] Step 13: OAuth configuration models
-- [ ] Step 14: Secure token storage
-- [ ] Step 15: JWT middleware for internal APIs
+### Phase 2: Database & Models (Steps 11-17)
+- [ ] Step 11: SQLModel setup and connection
+- [ ] Step 12: Person and Policy data models
+- [ ] Step 13: MeetingSeries and related models
+- [ ] Step 14: Database migrations with Alembic
+- [ ] Step 15: Repository pattern implementation
+- [ ] Step 16: Feature flags system
+- [ ] Step 17: Policy YAML loader and parser
 
-### Phase 3: Google Integration (Steps 16-20)
-- [ ] Step 16: Google OAuth credential setup
-- [ ] Step 17: Google Calendar API client
-- [ ] Step 18: Fetch calendar events (read-only)
-- [ ] Step 19: Free/busy time retrieval
-- [ ] Step 20: Basic conflict detection logic
+### Phase 3: Authentication & Security (Steps 18-20)
+- [ ] Step 18: OAuth configuration models
+- [ ] Step 19: Secure token storage
+- [ ] Step 20: JWT middleware for internal APIs
 
-### Phase 4: Communication (Steps 21-27)
-- [ ] Step 21: Gmail API client setup
-- [ ] Step 22: Email thread reader
-- [ ] Step 23: Meeting request parser
-- [ ] Step 24: Slack app configuration
-- [ ] Step 25: Slack event handler
-- [ ] Step 26: Message template engine
-- [ ] Step 27: Draft message generator
+### Phase 4: Google Integration (Steps 21-25)
+- [ ] Step 21: Google OAuth credential setup
+- [ ] Step 22: Google Calendar API client
+- [ ] Step 23: Fetch calendar events (read-only)
+- [ ] Step 24: Free/busy time retrieval
+- [ ] Step 25: Basic conflict detection logic
 
-### Phase 5: Orchestration (Steps 28-30)
-- [ ] Step 28: Scheduler slot finder
-- [ ] Step 29: Approval workflow models
-- [ ] Step 30: Basic orchestrator with state machine
+### Phase 5: Communication (Steps 26-32)
+- [ ] Step 26: Gmail API client setup
+- [ ] Step 27: Email thread reader
+- [ ] Step 28: Meeting request parser
+- [ ] Step 29: Slack app configuration
+- [ ] Step 30: Slack event handler
+- [ ] Step 31: Message template engine
+- [ ] Step 32: Draft message generator
+
+### Phase 6: Orchestration (Steps 33-35)
+- [ ] Step 33: Scheduler slot finder
+- [ ] Step 34: Approval workflow models
+- [ ] Step 35: Basic orchestrator with state machine
 
 ## Testing Checklist
 
@@ -76,8 +83,13 @@
 - [ ] User guide
 
 ## DevOps
-- [ ] Docker Compose setup
-- [ ] CI/CD pipeline
+- [ ] Docker Compose setup (Step 4)
+- [ ] CI/CD pipeline (Steps 31-35)
+  - [ ] GitHub Actions workflows
+  - [ ] Test automation
+  - [ ] Code quality gates
+  - [ ] Docker image builds
+  - [ ] Deployment automation
 - [ ] Environment configurations
 - [ ] Monitoring setup
 - [ ] Log aggregation
