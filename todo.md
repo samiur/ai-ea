@@ -2,7 +2,7 @@
 
 ## Current Status
 - [x] Project planning complete
-- [x] 30 implementation steps defined
+- [x] 35 implementation steps defined
 - [x] LLM prompts generated for each step
 - [x] Implementation started
 
@@ -34,26 +34,26 @@
 - [ ] Step 19: Secure token storage
 - [ ] Step 20: JWT middleware for internal APIs
 
-### Phase 4: Google Integration (Steps 21-25)
+### Phase 4: Calendar Core (Steps 21-25)
 - [ ] Step 21: Google OAuth credential setup
-- [ ] Step 22: Google Calendar API client
-- [ ] Step 23: Fetch calendar events (read-only)
-- [ ] Step 24: Free/busy time retrieval
-- [ ] Step 25: Basic conflict detection logic
+- [ ] Step 22: Calendar read integration via MCP
+- [ ] Step 23: Availability service
+- [ ] Step 24: Scheduler write service (two-phase commit)
+- [ ] Step 25: Conflict detection
 
-### Phase 5: Communication (Steps 26-32)
-- [ ] Step 26: Gmail API client setup
-- [ ] Step 27: Email thread reader
-- [ ] Step 28: Meeting request parser
-- [ ] Step 29: Slack app configuration
-- [ ] Step 30: Slack event handler
-- [ ] Step 31: Message template engine
-- [ ] Step 32: Draft message generator
+### Phase 5: Agent & Communication (Steps 26-32)
+- [ ] Step 26: Agent foundation (Claude Agent SDK)
+- [ ] Step 27: Gmail integration via MCP
+- [ ] Step 28: Meeting request extraction (structured output)
+- [ ] Step 29: Slack app and event handler
+- [ ] Step 30: Approval cards and Slack interactivity
+- [ ] Step 31: Message templates and drafting
+- [ ] Step 32: Zep memory integration
 
 ### Phase 6: Orchestration (Steps 33-35)
 - [ ] Step 33: Scheduler slot finder
-- [ ] Step 34: Approval workflow models
-- [ ] Step 35: Basic orchestrator with state machine
+- [ ] Step 34: Approval workflow, decision logger, shadow scorer
+- [ ] Step 35: Orchestrator with state machine and shadow mode
 
 ## Testing Checklist
 
@@ -83,8 +83,8 @@
 - [ ] User guide
 
 ## DevOps
-- [ ] Docker Compose setup (Step 4)
-- [ ] CI/CD pipeline (Steps 31-35)
+- [ ] Docker Compose setup (Step 9)
+- [x] CI/CD pipeline started (Steps 4-8; Step 4 done)
   - [ ] GitHub Actions workflows
   - [ ] Test automation
   - [ ] Code quality gates
@@ -95,8 +95,7 @@
 - [ ] Log aggregation
 
 ## Post-MVP Features (Future)
-- [ ] Zep memory integration
-- [ ] Confidence scoring ML model
+- [ ] Auto-send enablement for 1-1s *(scorer ships in MVP shadow mode — Step 34; thresholds activate in rollout Phase 2)*
 - [ ] Travel mode
 - [ ] Sanity sweeps
 - [ ] Advanced analytics dashboard

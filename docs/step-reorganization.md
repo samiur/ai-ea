@@ -40,29 +40,31 @@ Moving CI/CD infrastructure to steps 4-8 (immediately after basic project setup)
 - **Step 19**: Secure Token Storage *(was Step 14)*
 - **Step 20**: JWT Middleware for Internal APIs *(was Step 15)*
 
-### Phase 4: Google Integration (Steps 21-25)
+### Phase 4: Calendar Core (Steps 21-25)
 
-- **Step 21**: Google OAuth Credential Setup *(was Step 16)*
-- **Step 22**: Google Calendar API Client *(was Step 17)*
-- **Step 23**: Fetch Calendar Events (Read-Only) *(was Step 18)*
-- **Step 24**: Free/Busy Time Retrieval *(was Step 19)*
-- **Step 25**: Basic Conflict Detection Logic *(was Step 20)*
+> Steps 21-35 were rewritten on 2026-06-10 for the hybrid agent+MCP architecture (PRD §7), so the "was Step N" mapping ends here.
 
-### Phase 5: Communication (Steps 26-32)
+- **Step 21**: Google OAuth Credential Setup
+- **Step 22**: Calendar Read Integration via MCP
+- **Step 23**: Availability Service
+- **Step 24**: Scheduler Write Service (Two-Phase Commit)
+- **Step 25**: Conflict Detection
 
-- **Step 26**: Gmail API Client Setup *(was Step 21)*
-- **Step 27**: Email Thread Reader *(was Step 22)*
-- **Step 28**: Meeting Request Parser *(was Step 23)*
-- **Step 29**: Slack App Configuration *(was Step 24)*
-- **Step 30**: Slack Event Handler *(was Step 25)*
-- **Step 31**: Message Template Engine *(was Step 26)*
-- **Step 32**: Draft Message Generator *(was Step 27)*
+### Phase 5: Agent & Communication (Steps 26-32)
+
+- **Step 26**: Agent Foundation (Claude Agent SDK)
+- **Step 27**: Gmail Integration via MCP
+- **Step 28**: Meeting Request Extraction (Structured Output)
+- **Step 29**: Slack App and Event Handler
+- **Step 30**: Approval Cards and Slack Interactivity
+- **Step 31**: Message Templates and Drafting
+- **Step 32**: Zep Memory Integration
 
 ### Phase 6: Orchestration (Steps 33-35)
 
-- **Step 33**: Scheduler Slot Finder *(was Step 28)*
-- **Step 34**: Approval Workflow Models *(was Step 29)*
-- **Step 35**: Basic Orchestrator with State Machine *(was Step 30)*
+- **Step 33**: Scheduler Slot Finder
+- **Step 34**: Approval Workflow, Decision Logger, and Shadow Scorer
+- **Step 35**: Orchestrator with State Machine and Shadow Mode
 
 ## Implementation Impact
 
