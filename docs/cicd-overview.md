@@ -325,4 +325,4 @@ docker build --progress=plain -t ai-ea:debug .
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [uv Field Manual](../plan.md#uv-field-manual)
 - [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- [Deployment Guide](./deployment.md) (to be created in Step 35)
+- [Deployment Guide](./deployment.md) (to be created in Step 8)

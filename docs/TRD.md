@@ -350,18 +350,18 @@ Feature flags:
 **Phase 3: Authentication & Security** (Steps 18-20)
 6. OAuth models + Token storage + JWT middleware
 
-**Phase 4: Google Integration** (Steps 21-25)
-7. Google OAuth + Calendar API + Gmail API
-8. Conflict detection
+**Phase 4: Calendar Core** (Steps 21-25)
+7. Google OAuth + calendar reads via MCP + availability service
+8. Scheduler write service (two-phase commit) + conflict detection
 
-**Phase 5: Communication** (Steps 26-32)
-9. Slack bot + Message templates + Draft generation
-10. Email/Slack parsing
+**Phase 5: Agent & Communication** (Steps 26-32)
+9. Agent foundation (Claude Agent SDK) + Gmail/Slack via MCP
+10. Structured-output extraction + approval cards + drafting + Zep memory
 
 **Phase 6: Orchestration** (Steps 33-35)
-11. Scheduler + Approval workflows + Orchestrator
+11. Slot finder + approval workflow/decision logger/shadow scorer + orchestrator with shadow mode
 
-> **Revision pending (2026-06-10):** Phases 4–6 predate the hybrid agent+MCP decision (§0, PRD §7). plan.md Steps 21–35 need rework: MCP servers replace hand-built clients for reads/comms, the comms agent and parsers become agent tool-use, and Zep memory moves into MVP scope.
+> **Revised 2026-06-10:** plan.md was renumbered to the reorganized scheme and Steps 21–35 rewritten for the hybrid agent+MCP architecture (§0, PRD §7): MCP servers replace hand-built clients for reads/comms, parsing/drafting become agent structured output, calendar writes get an explicit two-phase-commit Scheduler step, and Zep memory lands in MVP as Step 32.
 
 **Phase 7: Advanced Features** (Post-MVP)
 12. Confidence auto-send enablement (scorer ships in MVP, shadow-only)
