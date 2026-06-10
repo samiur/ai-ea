@@ -168,6 +168,16 @@ nothing to fix. Next push re-runs it.
   upload-artifact@v4): forced Node 24 from 2026-06-16. May need action
   version bumps soon.
 
+## Where I stopped & why
+
+Completed Steps 5, 6, 7, 9, 10, 11, 12, 13 (Step 8 deferred — see below).
+Stopped before **Step 14 (Alembic migrations)**: autogenerating the initial
+migration needs a live postgres to diff against (SQLite produces wrong
+DDL/types), and this sandbox has no docker daemon. Doing it blind and
+iterating through CI pushes felt like the wrong trade. It's a clean
+30-minute step on any machine with Docker: `./scripts/start-db.sh`, then
+follow plan.md Step 14.
+
 ## Deferred — needs Samiur
 
 - **Step 8 (Deployment automation)**: requires a real deployment target
