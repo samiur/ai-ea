@@ -71,3 +71,7 @@ logs/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Local database
+postgres-data/
+docker-compose.override.yml

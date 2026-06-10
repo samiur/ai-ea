@@ -243,7 +243,7 @@ jobs:
       - name: Scan image with Trivy
         # Pinned >= 0.35.0: earlier tags were affected by the 2026-03
         # trivy-action supply-chain compromise
-        uses: aquasecurity/trivy-action@0.36.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           image-ref: ${{ env.IMAGE_NAME }}:ci-scan
           format: table

@@ -36,6 +36,24 @@ job. Verified: bot now comments test results (50 ✅).
 - New tests/test_docker.py (10 tests). Local docker daemon unavailable in
   this sandbox — the actual image build is validated by the CI job itself.
 
+### CI fix — Docker job
+First docker-job run failed resolving `aquasecurity/trivy-action@0.36.0`;
+the release tag is v-prefixed. Fixed to `@v0.36.0`.
+
+### Step 9: Docker Compose for PostgreSQL — DONE
+- docker-compose.yml (postgres:15, healthcheck, named volume, network) —
+  same engine version as the CI service.
+- scripts/start-db.sh (waits for healthy), stop-db.sh, reset-db.sh
+  (requires typing 'reset' to confirm).
+- docker-compose.override.yml.example provided; real override gitignored.
+- README "Local Database" section; .gitignore additions.
+- New tests/test_docker_compose.py (10 static-validation tests). Couldn't
+  run compose here (no docker daemon) — scripts are untested live; verify
+  once on a machine with Docker.
+- While editing README, found 46 pre-existing NUL/control bytes (mangled
+  box-drawing chars in the Project Structure tree, predates this session —
+  confirmed in HEAD). Stripped them; README is clean UTF-8 again.
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
