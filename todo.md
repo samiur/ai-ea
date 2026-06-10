@@ -14,7 +14,7 @@
 - [x] Step 3: Pydantic settings and environment config
 - [x] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
 - [x] Step 5: **Test execution in CI** *(CI/CD - moved early)*
-- [ ] Step 6: **Code quality checks** *(CI/CD - moved early)*
+- [x] Step 6: **Code quality checks** *(CI/CD - moved early)*
 - [ ] Step 7: **Docker build and registry** *(CI/CD - moved early)*
 - [ ] Step 8: **Deployment automation** *(CI/CD - moved early)*
 - [ ] Step 9: Docker Compose for PostgreSQL

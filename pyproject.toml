@@ -25,7 +25,9 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
+    "bandit>=1.8.0",
     "mypy>=1.18.2",
+    "pip-audit>=2.7.3",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
     "pytest-cov>=4.1.0",
