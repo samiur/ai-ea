@@ -1,0 +1,7 @@
+# Copy to docker-compose.override.yml (gitignored) for local tweaks.
+# Example: remap the host port if 5432 is taken, or tune postgres.
+services:
+  postgres:
+    ports:
+      - "5433:5432"
+    # command: postgres -c log_statement=all

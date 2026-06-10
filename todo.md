@@ -13,17 +13,17 @@
 - [x] Step 2: Basic FastAPI app with health endpoint
 - [x] Step 3: Pydantic settings and environment config
 - [x] Step 4: **Basic GitHub Actions workflow** *(CI/CD - moved early)*
-- [ ] Step 5: **Test execution in CI** *(CI/CD - moved early)*
-- [ ] Step 6: **Code quality checks** *(CI/CD - moved early)*
-- [ ] Step 7: **Docker build and registry** *(CI/CD - moved early)*
+- [x] Step 5: **Test execution in CI** *(CI/CD - moved early)*
+- [x] Step 6: **Code quality checks** *(CI/CD - moved early)*
+- [x] Step 7: **Docker build and registry** *(CI/CD - moved early)*
 - [ ] Step 8: **Deployment automation** *(CI/CD - moved early)*
-- [ ] Step 9: Docker Compose for PostgreSQL
-- [ ] Step 10: API error handling and responses
+- [x] Step 9: Docker Compose for PostgreSQL
+- [x] Step 10: API error handling and responses
 
 ### Phase 2: Database & Models (Steps 11-17)
-- [ ] Step 11: SQLModel setup and connection
-- [ ] Step 12: Person and Policy data models
-- [ ] Step 13: MeetingSeries and related models
+- [x] Step 11: SQLModel setup and connection
+- [x] Step 12: Person and Policy data models
+- [x] Step 13: MeetingSeries and related models
 - [ ] Step 14: Database migrations with Alembic
 - [ ] Step 15: Repository pattern implementation
 - [ ] Step 16: Feature flags system
@@ -156,6 +156,19 @@
   - Comprehensive test suite (12 tests in test_ci_setup.py, 40 total tests passing)
   - All CI checks passing (tests, mypy, ruff)
   - Created Issue #5, PR #6: https://github.com/samiur/ai-ea/pull/6
+
+**2026-06-10:**
+- ✅ PRD review session: hybrid agent+MCP architecture adopted, safety
+  requirements added, Zep promoted to MVP, plan.md renumbered and
+  Steps 21-35 rewritten (PR #7)
+- ✅ Step 5 completed: Test execution in CI
+  - Added postgres:15 service container with healthcheck to the test job
+  - DATABASE_URL provided to the test run; TCP reachability test (CI-only)
+  - pytest now emits junit.xml + coverage.xml (--cov=src)
+  - Artifacts uploaded on every run (if: always()); results published for
+    PR annotations via EnricoMi/publish-unit-test-result-action
+  - Job timeout 15 min; per-test timeout 60s via pytest-timeout
+  - New test suite tests/test_ci_integration.py (10 tests; 50 total)
 
 ---
 

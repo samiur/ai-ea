@@ -118,15 +118,28 @@ def test_ci_workflow_uses_uv_setup(ci_workflow_path: Path) -> None:
     assert found_uv_setup, "At least one job should use astral-sh/setup-uv action"
 
 
+def _job_touches_code(job_config: dict[str, Any]) -> bool:
+    """A job needs the repo if any step uses an action on it or runs a real command."""
+    for step in job_config.get("steps", []):
+        if "uses" in step and "actions/checkout" not in step["uses"]:
+            return True
+        run = step.get("run", "")
+        if run and not run.strip().startswith("echo"):
+            return True
+    return False
+
+
 def test_ci_workflow_uses_checkout(ci_workflow_path: Path) -> None:
-    """Test that ci.yml uses actions/checkout."""
+    """Test that ci.yml uses actions/checkout in every job that works on the repo."""
     with open(ci_workflow_path) as f:
         workflow: dict[str, Any] = yaml.safe_load(f)
 
     jobs = workflow["jobs"]
 
-    # Check that all jobs checkout code
+    # Aggregation-only jobs (e.g., quality-gate) don't need the repo
     for job_name, job_config in jobs.items():
+        if not _job_touches_code(job_config):
+            continue
         steps = job_config.get("steps", [])
         found_checkout = False
         for step in steps:
