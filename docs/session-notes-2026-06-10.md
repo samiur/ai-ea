@@ -27,6 +27,15 @@ job. Verified: bot now comments test results (50 ✅).
 - Added ruff/mypy cache steps; bandit badge in README.
 - New tests/test_code_quality.py (9 tests).
 
+### Step 7: Docker build and registry — DONE
+- Production Dockerfile: multi-stage, uv 0.8.17 (pinned, matches local),
+  python:3.12-slim, lockfile-only prod deps, deps layered before src.
+- .dockerignore excludes secrets/tests/docs/caches.
+- CI `docker` job: buildx build (amd64), Trivy scan gates before any push,
+  pushes to ghcr only on non-PR events, GHA layer caching.
+- New tests/test_docker.py (10 tests). Local docker daemon unavailable in
+  this sandbox — the actual image build is validated by the CI job itself.
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
@@ -44,7 +53,17 @@ job. Verified: bot now comments test results (50 ✅).
 4. **Step 6 — test amendment**: Step 4's test_ci_workflow_uses_checkout
    required every job to checkout code; amended to exempt aggregation-only
    jobs (echo-only steps) so the quality-gate job is allowed.
-5. (appended per step below)
+5. **Step 7 — Trivy pin**: web search revealed trivy-action was
+   supply-chain compromised 2026-03 (tags <= 0.34.2 affected). Pinned
+   aquasecurity/trivy-action@0.36.0 (immutable release, post-incident) and
+   added a regression test enforcing >= 0.35.0.
+6. **Step 7 — scan policy**: plan said "upload scan results to GitHub
+   Security" — that needs GHAS on private repos, availability unknown, so
+   instead Trivy fails the job on fixable HIGH/CRITICAL (ignore-unfixed).
+7. **Step 7 — image name**: ghcr.io/<owner>/ai-executive-assistant per
+   plan, not the repo name ai-ea. Registry package will be created on
+   first non-PR push; visibility defaults may need a settings pass.
+8. (appended per step below)
 
 ## Watch items
 
