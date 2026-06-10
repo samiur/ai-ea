@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes.health import router as health_router
 from src.config import get_settings
+from src.database import dispose_engine, init_db
 from src.middleware.error_handler import register_error_handlers
 
 
@@ -27,9 +28,17 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     if settings.environment == "production" and settings.debug:
         print("⚠️  WARNING: Debug mode is enabled in production!")
 
+    # Initialize database (non-fatal in dev; /health/detailed reports state)
+    try:
+        await init_db()
+        print("🗄️  Database initialized")
+    except Exception as exc:
+        print(f"⚠️  Database unavailable at startup: {exc}")
+
     yield
 
     # Shutdown
+    await dispose_engine()
     print(f"👋 Shutting down {settings.app_name}...")
 
 

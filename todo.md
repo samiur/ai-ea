@@ -21,7 +21,7 @@
 - [x] Step 10: API error handling and responses
 
 ### Phase 2: Database & Models (Steps 11-17)
-- [ ] Step 11: SQLModel setup and connection
+- [x] Step 11: SQLModel setup and connection
 - [ ] Step 12: Person and Policy data models
 - [ ] Step 13: MeetingSeries and related models
 - [ ] Step 14: Database migrations with Alembic

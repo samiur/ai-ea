@@ -78,6 +78,27 @@ python:3.12-slim's Debian packages (libssl3t64 et al.). Added
   defaults (setdefault, so CI's real DATABASE_URL wins). test_main now
   passes standalone.
 
+### CI note — transient docker failure
+The docker job run after the CVE fix failed pulling moby/buildkit from
+Docker Hub ("context deadline exceeded") — runner-side network flake,
+nothing to fix. Next push re-runs it.
+
+### Step 11: SQLModel setup and connection — DONE (Phase 2 begins)
+- src/database.py: lazy async engine from settings (asyncpg; pool_size=5,
+  max_overflow=10, pool_pre_ping), get_session dependency with
+  commit/rollback semantics, init_db, check_database_connection,
+  configure_database(url) test hook, dispose on shutdown.
+- src/models/base.py: TimestampedModel (UUID pk, created_at/updated_at).
+  **Naming deviation**: plan calls it BaseModel; renamed to avoid
+  shadowing pydantic.BaseModel.
+- /health/detailed now does a real SELECT 1 instead of the TCP probe.
+- main.py lifespan: init_db on startup (non-fatal if DB down in dev),
+  engine disposed on shutdown.
+- tests/test_database.py (7 tests): session logic runs against in-memory
+  SQLite (aiosqlite) so it works without postgres; a live round-trip test
+  runs in CI against the service container.
+- New deps: asyncpg (runtime), aiosqlite (dev).
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
