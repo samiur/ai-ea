@@ -117,6 +117,20 @@ nothing to fix. Next push re-runs it.
   models (tests demonstrate the pattern).
 - New dep: email-validator (pydantic[email]) for EmailStr.
 
+### Step 13: MeetingSeries and related models — DONE
+- src/models/meeting.py: MeetingSeries (owner/policy FKs, duration
+  15-480, RRULE-validated cadence) + MeetingAttendee join with composite
+  (series_id, person_id) primary key and AttendeeResponse enum.
+- src/models/schedule.py: ScheduleIntent with IntentKind/Status/Source
+  StrEnums per TRD data model.
+- src/utils/rrule.py: validate/next_occurrence/expand over dateutil.
+- src/repositories/meeting.py: series CRUD, attendee add/remove/list,
+  list_by_owner, list_for_attendee (join query).
+- tests/test_models_meetings.py (10 tests). 123 passing total.
+- **Assumption**: no ScheduleIntent repository yet — the plan doesn't
+  ask for one explicitly; it'll arrive when orchestration needs it.
+- New deps: python-dateutil (runtime), types-python-dateutil (dev).
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
