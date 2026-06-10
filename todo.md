@@ -2,7 +2,7 @@
 
 ## Current Status
 - [x] Project planning complete
-- [x] 30 implementation steps defined
+- [x] 35 implementation steps defined
 - [x] LLM prompts generated for each step
 - [x] Implementation started
 
@@ -83,8 +83,8 @@
 - [ ] User guide
 
 ## DevOps
-- [ ] Docker Compose setup (Step 4)
-- [ ] CI/CD pipeline (Steps 31-35)
+- [ ] Docker Compose setup (Step 9)
+- [x] CI/CD pipeline started (Steps 4-8; Step 4 done)
   - [ ] GitHub Actions workflows
   - [ ] Test automation
   - [ ] Code quality gates
@@ -95,8 +95,8 @@
 - [ ] Log aggregation
 
 ## Post-MVP Features (Future)
-- [ ] Zep memory integration
-- [ ] Confidence scoring ML model
+- [ ] Zep memory integration *(moved to MVP scope per PRD 2026-06-10 — plan.md revision pending)*
+- [ ] Confidence scoring ML model *(scorer ships in MVP shadow mode; auto-send enablement is post-MVP)*
 - [ ] Travel mode
 - [ ] Sanity sweeps
 - [ ] Advanced analytics dashboard

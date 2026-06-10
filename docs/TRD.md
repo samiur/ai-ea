@@ -2,7 +2,9 @@
 
 ## 0) Executive Summary
 
-We’re building a policy-driven “calendar owner” that (a) detects scheduling/reschedule needs, (b) drafts and—when safe—sends messages over Gmail/Slack, (c) commits calendar changes with two-phase safety checks, and (d) learns durable preferences via Zep memory graphs. MVP runs in approval-first mode with opt-in autonomy for 1-1s.
+We’re building a policy-driven “calendar owner” that (a) detects scheduling/reschedule needs, (b) drafts and—when safe—sends messages over Gmail/Slack, (c) commits calendar changes with two-phase safety checks, and (d) learns durable preferences via Zep memory graphs. MVP runs strictly approval-first; the confidence scorer runs in shadow (logging would-have-decided verdicts) and auto-send for 1-1s is enabled in rollout Phase 2 once thresholds are calibrated.
+
+**Integration architecture (decided 2026-06-10, PRD §7): hybrid.** An LLM agent (Claude Agent SDK) drives parsing, drafting, and coordination via MCP tools — mature MCP servers for Calendar, Gmail, and Slack replace hand-built API clients for reads and comms. Calendar **writes** remain exclusive to the deterministic Scheduler service (§2.3) so two-phase commit, idempotency, and policy enforcement live in plain code, not prompts.
 
 ---
 
@@ -81,6 +83,7 @@ flowchart LR
 * **Email** (Gmail): draft/send, label “ai-assistant”, thread-aware subject normalization.
 * **Slack**: DM + thread replies; uses message shortcuts; escalates to email if no response in N hours.
 * **Templates**: tone by counterpart (exec-concise vs friendly-internal), includes minimal agenda, links.
+* Implemented as an LLM agent with Gmail/Slack MCP tools; it can draft and converse but cannot write to the calendar — commits go only through the Scheduler service. External messages carry the assistant disclosure signature (PRD R7).
 
 ### 2.5 Memory (Zep)
 
@@ -214,6 +217,8 @@ Each `Preference` carries validity windows (`valid_from`, `valid_to`) and eviden
 
 Explainability: include top 5 feature attributions in the approval card.
 
+**MVP note (2026-06-10):** during MVP, every action routes to approval regardless of score; the scorer logs its would-have-decided verdict (shadow mode). The thresholds above take effect in rollout Phase 2 after calibration against shadow logs (PRD §12).
+
 ---
 
 ## 7) Safety Rails
@@ -223,6 +228,7 @@ Explainability: include top 5 feature attributions in the approval card.
 3. **Recipient disambiguation**: org graph + alias expansion; prompt on first-time contacts.
 4. **TZ/Holiday guardrails**: per-attendee local hours; block outside unless policy allows.
 5. **Undo**: single-click rollback (stores pre-state snapshot for N days).
+6. **Prompt-injection defense**: inbound email/Slack content is untrusted data, never instructions. The comms agent’s tool access is scoped per intent; counterpart content cannot modify policies, recipients, or autonomy level. First-time/unrecognized senders get lowest autonomy (PRD R7).
 
 ---
 
@@ -284,9 +290,10 @@ All endpoints require JWT (user) or signed bot tokens; internal services via mTL
 
 ## 13) Rollout & Flags
 
-* **Phase 0 (You)**: approval-first for 1-1s; soft holds; morning digest.
-* **Phase 1 (Directs)**: enable auto-send for 1-1s; cadence keeper.
-* **Phase 2 (Peers/Execs/Hiring)**: enable backfill/waitlist; ATS/CRM presets (flags off by default).
+* **Phase 0 (Shadow, you only)**: 2 weeks, no sends/writes; drafts + shadow-scored verdicts; KPI baseline (PRD §12).
+* **Phase 1 (You)**: approval-first for 1-1s; soft holds; morning digest.
+* **Phase 2 (Directs)**: enable auto-send for 1-1s; cadence keeper.
+* **Phase 3 (Peers/Execs/Hiring)**: enable backfill/waitlist; ATS/CRM presets (flags off by default).
 
 Feature flags:
 
@@ -317,7 +324,7 @@ Feature flags:
 
 **Canary**
 
-* 2 weeks “shadow mode” (no sends; only drafts + suggested actions) to calibrate confidence thresholds.
+* 2 weeks “shadow mode” (no sends; only drafts + suggested actions) to calibrate confidence thresholds — this is rollout Phase 0 in PRD §12.
 
 ---
 
@@ -354,10 +361,11 @@ Feature flags:
 **Phase 6: Orchestration** (Steps 33-35)
 11. Scheduler + Approval workflows + Orchestrator
 
+> **Revision pending (2026-06-10):** Phases 4–6 predate the hybrid agent+MCP decision (§0, PRD §7). plan.md Steps 21–35 need rework: MCP servers replace hand-built clients for reads/comms, the comms agent and parsers become agent tool-use, and Zep memory moves into MVP scope.
+
 **Phase 7: Advanced Features** (Post-MVP)
-12. Zep memory integration
-13. Confidence scoring ML
-14. Travel mode + Sanity sweeps
+12. Confidence auto-send enablement (scorer ships in MVP, shadow-only)
+13. Travel mode + Sanity sweeps
 
 ---
 
