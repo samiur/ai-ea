@@ -8,7 +8,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.api.routes.health import router as health_router
 from src.config import get_settings
+from src.middleware.error_handler import register_error_handlers
 
 
 @asynccontextmanager
@@ -42,6 +44,12 @@ app = FastAPI(
     lifespan=lifespan,
     debug=settings.debug,
 )
+
+# Standardized error envelopes for all exceptions
+register_error_handlers(app)
+
+# Health endpoints (basic + detailed dependency checks)
+app.include_router(health_router)
 
 # Configure CORS for localhost development
 app.add_middleware(
@@ -82,12 +90,6 @@ async def root() -> dict[str, str]:
         "docs_url": "/docs",
         "redoc_url": "/redoc",
     }
-
-
-@app.get("/health")
-async def health() -> dict[str, str]:
-    """Health check endpoint."""
-    return {"status": "healthy"}
 
 
 @app.get("/status")

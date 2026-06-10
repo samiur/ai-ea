@@ -54,6 +54,30 @@ the release tag is v-prefixed. Fixed to `@v0.36.0`.
   box-drawing chars in the Project Structure tree, predates this session —
   confirmed in HEAD). Stripped them; README is clean UTF-8 again.
 
+### CI fix — Trivy findings (Dockerfile)
+Trivy correctly failed the build: 3 fixable HIGH CVEs in
+python:3.12-slim's Debian packages (libssl3t64 et al.). Added
+`apt-get upgrade` to the image build to pull patched packages.
+
+### Step 10: API error handling and responses — DONE
+- src/api/errors.py: APIError hierarchy (404/400/401/403/409/503) with
+  stable machine-readable codes.
+- src/api/responses.py: StandardResponse envelope (success/data/error/
+  request_id/timestamp), ErrorDetail, PaginatedData, factories.
+- src/middleware/error_handler.py: global handlers for APIError,
+  RequestValidationError (422 envelope), HTTPException (404s get
+  envelopes too), and unexpected exceptions (logged with request_id;
+  message sanitized when environment == production).
+- src/api/routes/health.py: /health unchanged contract; new
+  /health/detailed probes the database over TCP (driver-free until
+  Step 11), redis reports "mocked" per plan.
+- tests/test_error_handling.py (16 tests). 93 passing total.
+- **Bug found & fixed**: test_main.py only passed due to alphabetical
+  ordering — test_config primed the lru_cached settings singleton with
+  monkeypatched env vars. Added tests/conftest.py setting required env
+  defaults (setdefault, so CI's real DATABASE_URL wins). test_main now
+  passes standalone.
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
