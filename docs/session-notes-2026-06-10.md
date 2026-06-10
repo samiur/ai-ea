@@ -99,6 +99,24 @@ nothing to fix. Next push re-runs it.
   runs in CI against the service container.
 - New deps: asyncpg (runtime), aiosqlite (dev).
 
+### Step 12: Person and Policy models — DONE
+- src/models/person.py: Person (unique email via EmailStr, display_name,
+  IANA timezone validated with stdlib zoneinfo, is_active).
+- src/models/policy.py: Policy + PolicyTier StrEnum (canonical PRD R2
+  tiers), range-validated windows/buffers, working_hours JSON validated
+  as {key: [HH:MM, HH:MM]} with start<end.
+- src/repositories/person.py & policy.py: standalone async CRUD
+  (BaseRepository generic arrives Step 15 per plan).
+- tests/test_models_person_policy.py (14 tests). 113 passing total.
+- **Assumptions**: (a) primary key is TimestampedModel's `id`, not the
+  plan's `person_id`/`policy_id` field names; (b) timezone validation
+  uses stdlib zoneinfo instead of pytz (TRD §16 listed pytz — zoneinfo is
+  the modern stdlib equivalent); (c) SQLModel table models skip pydantic
+  validation on __init__, so validation is enforced via model_validate —
+  repository.update re-validates merged rows; create expects pre-validated
+  models (tests demonstrate the pattern).
+- New dep: email-validator (pydantic[email]) for EmailStr.
+
 ## Assumptions made (verify these)
 
 1. **Stacked steps on one PR**: rather than one PR per step (repo's earlier
