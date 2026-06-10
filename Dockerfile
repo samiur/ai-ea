@@ -4,6 +4,12 @@ FROM ghcr.io/astral-sh/uv:0.8.17 AS uv
 
 FROM python:3.12-slim AS base
 
+# Pull patched OS packages the base image hasn't rebuilt with yet
+# (keeps the Trivy HIGH/CRITICAL gate green between base-image releases)
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY --from=uv /uv /uvx /usr/local/bin/
 
 WORKDIR /app
